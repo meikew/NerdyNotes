@@ -1,0 +1,1 @@
+g++ main.cpp main.h knomegui.cpp knomegui.h model.cpp model.h nameitem.cpp nameitem.h item.cpp item.h relation.cpp relation.h statement.cpp statement.h fileitem.cpp fileitem.h quizitem.cpp quizitem.h mytime.cpp mytime.h utilfunctions.cpp utilfunctions.h bufferedbitmap.h `wx-config --cxxflags  --libs` -o NerdyNotes
