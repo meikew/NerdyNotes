@@ -95,6 +95,7 @@ public:
   bool find_in_file_dictionary(std::string fname);
   bool find_in_concept_dictionary(std::string cname);
   void search(std::string query,Knomegui * kg);
+  void remove_quizitems(std::string statementid);
 };
 
 #endif

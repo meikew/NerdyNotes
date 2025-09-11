@@ -53,7 +53,7 @@ protected:
   relation * relationid;
   item * objectid;
   bool forwardmode; //0: state missing item, 1: state all matching items
-  bool backwardmode;
+  bool backwardmode;//same as for forward mode
 };
 
 #endif

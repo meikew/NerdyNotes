@@ -110,11 +110,11 @@ model::model()
   int newquestions = 0;
   std::cout << "Reading in statement file ... " << std::endl;
   std::vector<std::string> statementqueue;
-  while (getline(statementfile,line)){
+  while (getline(statementfile,line)){//read in all lines, line by line
     statementqueue.push_back(line);
   }
   unsigned i = 0;
-  while (i < statementqueue.size()){
+  while (i < statementqueue.size()){//for each statement
     //std::cout << i << " " << statementqueue[i] << std::endl;
     std::istringstream ss(statementqueue[i]);
     int counter;
@@ -166,31 +166,31 @@ model::model()
     }
 
     bool success = add_statement(subid,relid,objid,quiztype,forwardmode,backwardmode,EF,reviewdates,Is,"s",counter);
-    if (success){
+    if (success){//this will be true if the subject and object have been added before
       mytime today;
-      if ((quiztype == 1) || (quiztype == 2)){
-	if (reviewdates[0] <= today){
-	  if ((Is[0]>1)||(newquestions < 400)){
-	  std::string thisid =  "s" + std::to_string(counter);
-	  std::pair <std::string,int> q(thisid,0);
-	  quizqueue.push_back(q);
-	  if (Is[0] <=1) newquestions ++;
-	  }
-	}
+      if ((quiztype == 1) || (quiztype == 2)){//forward quiz is active
+	      if (reviewdates[0] <= today){//due or overdue
+	        if ((Is[0]>1)||(newquestions < 400)){//if it is either an old card with an interval larger than one or fewer than 400 new cards have been added so far
+	          std::string thisid =  "s" + std::to_string(counter);
+	          std::pair <std::string,int> q(thisid,0);//0 indicates the forward quiz direction
+	          quizqueue.push_back(q);
+	        if (Is[0] <=1) newquestions ++;//keep track of the number of new questions already added
+	        }
+	      }
       }
-      if ((quiztype == 1) || (quiztype == 3)){
-	if (reviewdates[1] <= today){
-	  if ((Is[1]>1)||(newquestions < 400)){
-	    std::string thisid =  "s" + std::to_string(counter);
-	    std::pair <std::string,int> q(thisid,1);
-	    quizqueue.push_back(q);
-	    if (Is[1] <=1) newquestions ++;
-	  }
-	}
+      if ((quiztype == 1) || (quiztype == 3)){//backward quiz is active
+	      if (reviewdates[1] <= today){//due or overdue
+	        if ((Is[1]>1)||(newquestions < 400)){//if it is either an old card with an interval larger than one or fewer than 400 new cards have been added so far
+	          std::string thisid =  "s" + std::to_string(counter);
+	          std::pair <std::string,int> q(thisid,1);//1 indicates the forward quiz direction
+	          quizqueue.push_back(q);
+	          if (Is[1] <=1) newquestions ++;//keep track of the number of new questions already added
+	        }
+	      }
       }
     }
-    else {
-      statementqueue.push_back(statementqueue[i]);
+    else {//if subject or object have not been added before (this can happen if they are statements that are later in the file)
+      statementqueue.push_back(statementqueue[i]);//add the line again to the end of the statement queue so that it is read again later
     }
     i++;
   }
@@ -508,6 +508,8 @@ void model::update_filedictionary(std::string oldname,std::string newname){
 }
 
 void model::start_quiz(Knomegui * kg){
+  previousquizitem = nullptr;//to make sure that this doesn't point to a quiz item from a previous quiz that has been deleted in the meantime
+  currentquizitem = nullptr;//same
   int numquestions = quizqueue.size();
   if (numquestions){//if there are questions available
     wxString dialoguetext("I have " + std::to_string(numquestions) + " questions for you. \n Would you like to activate recovery mode?");
@@ -674,4 +676,20 @@ void model::search(std::string query, Knomegui * kg){
     wxMessageDialog *dial = new wxMessageDialog(NULL, wxT("Sorry, no matches."), wxT("Search results"), wxOK | wxICON_ERROR);
     dial->ShowModal();
   }
+}
+
+void model::remove_quizitems(std::string statementid){
+  //iterate over the quizqueue and remove all items that have the statementid in the first slot of the pair; there are at most 2 (forward and backward quiz direction)
+  unsigned i = 0;
+  int quizzesremoved = 0;
+  while ((i < quizqueue.size()) & (quizzesremoved < 2)){
+    if (quizqueue[i].first == statementid){
+      quizqueue.erase(quizqueue.begin()+i);
+      quizzesremoved++;
+    }
+    else {
+      i++;
+    }
+  }
+
 }

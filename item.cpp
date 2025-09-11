@@ -35,6 +35,11 @@ void item::destructor(model& M){
       (it->second)[0]->destructor(M);//vector entries are deleted by the remove_statement function
     }
   }
+  //check whether statement is in the quiz queue and, if yes, remove it
+  //to make it more efficient, first check whether the item is a statement because only those can be in the quiz queue
+  if (id[0]=='s'){
+    M.remove_quizitems(id);
+  }
   delete this;
 }
 

@@ -22,7 +22,7 @@
 #include <string>
 #include <wx/wx.h>
 
-class model;//forward decleration, necessary to allow for circular dependency between model and statement class
+class model;//forward declaration, necessary to allow for circular dependency between model and statement class
 class Knomegui;
 
 class item {
