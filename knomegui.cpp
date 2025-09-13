@@ -34,6 +34,10 @@ const int ID_ENDQUIZ = 7;
 const int ID_SEARCH = 8;
 const int ID_INFO = 9;
 
+Knomegui::~Knomegui(){
+  KM.save_to_file();//model is always saved before exiting to prevent losing progress when exiting in the middle of a quiz
+}
+
 
 Knomegui::Knomegui(const wxString& title)
        : wxFrame(NULL, -1, title, wxPoint(-1, -1), wxSize(900, 700)) //model should be constructed by default constructor

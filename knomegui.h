@@ -33,6 +33,7 @@ private:
   wxToolBar * toolbar;
   
 public:
+  ~Knomegui();
   Knomegui(const wxString& title);
   wxSimplebook* GetBook() {return mypanelbook;};
   void DisplayFirstPage(wxScrolled<wxPanel> * newpanel);
