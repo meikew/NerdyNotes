@@ -182,7 +182,7 @@ model::model()
 	      if (reviewdates[1] <= today){//due or overdue
 	        if ((Is[1]>1)||(newquestions < 400)){//if it is either an old card with an interval larger than one or fewer than 400 new cards have been added so far
 	          std::string thisid =  "s" + std::to_string(counter);
-	          std::pair <std::string,int> q(thisid,1);//1 indicates the forward quiz direction
+	          std::pair <std::string,int> q(thisid,1);//1 indicates the backward quiz direction
 	          quizqueue.push_back(q);
 	          if (Is[1] <=1) newquestions ++;//keep track of the number of new questions already added
 	        }
@@ -678,12 +678,29 @@ void model::search(std::string query, Knomegui * kg){
   }
 }
 
+//called if the whole statement is deleted; both directions are removed from the quizqueue if present
 void model::remove_quizitems(std::string statementid){
   //iterate over the quizqueue and remove all items that have the statementid in the first slot of the pair; there are at most 2 (forward and backward quiz direction)
   unsigned i = 0;
   int quizzesremoved = 0;
   while ((i < quizqueue.size()) & (quizzesremoved < 2)){
     if (quizqueue[i].first == statementid){
+      quizqueue.erase(quizqueue.begin()+i);
+      quizzesremoved++;
+    }
+    else {
+      i++;
+    }
+  }
+
+}
+
+//called if a quiz direction is unticked; only one direction is removed from the quizqueue if present
+void model::remove_quizitems(std::string statementid,int direction){
+  unsigned i = 0;
+  int quizzesremoved = 0;
+  while ((i < quizqueue.size()) & (quizzesremoved < 1)){
+    if ((quizqueue[i].first == statementid)&(quizqueue[i].second == direction)){
       quizqueue.erase(quizqueue.begin()+i);
       quizzesremoved++;
     }

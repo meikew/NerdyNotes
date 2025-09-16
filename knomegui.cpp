@@ -129,12 +129,18 @@ void Knomegui::OnConceptEdit(wxCommandEvent& event){
 void Knomegui::OnCheckboxQuizforward(wxCommandEvent& event){
   statement * sp = static_cast<statement*>(KM.get_current_item());
   sp->updateforward(event.IsChecked());
+  if (!event.IsChecked()){//if the forward direction just got deactivated
+    KM.remove_quizitems(sp->get_id(),0);
+  }
   KM.save_to_file();
 }
 
 void Knomegui::OnCheckboxQuizbackward(wxCommandEvent& event){
   statement * sp = static_cast<statement*>(KM.get_current_item());
   sp->updatebackward(event.IsChecked());
+  if (!event.IsChecked()){//if the backward direction just got deactivated
+    KM.remove_quizitems(sp->get_id(),1);
+  }
   KM.save_to_file();
 }
 
