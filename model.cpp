@@ -535,15 +535,16 @@ void model::randomquizquestion(Knomegui * kg){
   boost::uniform_smallint<> unint(0,quizqueue.size()-1);
   boost::variate_generator<boost::mt19937&, boost::uniform_smallint<> > randomquestion(rng, unint);
   currentquizindex = randomquestion();
-  previousquizitem = currentquizitem;
-  currentquizitem = dynamic_cast<quizitem*>(itemmap[quizqueue[currentquizindex].first]);
+  quizitem * proposedquizitem = dynamic_cast<quizitem*>(itemmap[quizqueue[currentquizindex].first]);
   currentquizdirection = quizqueue[currentquizindex].second;
-  int overduedays = today - currentquizitem->get_reviewdates(currentquizdirection);
+  int overduedays = today - proposedquizitem->get_reviewdates(currentquizdirection);
   double keepprob = 1;
   if (recover){
     keepprob = std::max(0.1,1-0.07*overduedays);
   }
   if (uni() < keepprob){
+    previousquizitem = currentquizitem;
+    currentquizitem = proposedquizitem;
     currentquizitem->quiz_print(currentquizdirection,kg);
   }
   else {
