@@ -97,6 +97,7 @@ public:
   void search(std::string query,Knomegui * kg);
   void remove_quizitems(std::string statementid);//called if the whole statement is deleted; both directions are removed from the quizqueue if present
   void remove_quizitems(std::string statementid,int direction);//called if a quiz direction is unticked; only one direction is removed from the quizqueue if present
+  void open_image(std::string fileid);
 };
 
 #endif

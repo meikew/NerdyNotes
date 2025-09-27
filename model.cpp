@@ -711,3 +711,10 @@ void model::remove_quizitems(std::string statementid,int direction){
   }
 
 }
+
+void model::open_image(std::string fileid){
+  fileitem * filepointer = dynamic_cast<fileitem*>(itemmap[fileid]); 
+  std::string filename = filepointer->get_filename();
+  std::string command = "xdg-open " + filename + " 2> errorfile & ";//2 means error output, if error output is printed to the console knome freezes
+  system(command.c_str());   
+}

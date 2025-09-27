@@ -78,7 +78,7 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   case 1:
   {
     if (validimagetype){
-      imageshown = displayimage(firstpanel,fgs,400,true);
+      imageshown = displayimage(firstpanel,fgs,400,true,kg,false);
     }
     if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
       wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,filename,wxPoint(-1, -1), wxSize(400, 60), wxTE_MULTILINE | wxTE_READONLY);
@@ -90,7 +90,7 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   case -1://for quiz answers
   {
     if (validimagetype){
-      imageshown = displayimage(firstpanel,fgs,400,true);
+      imageshown = displayimage(firstpanel,fgs,600,true,kg,true);
     }
     if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
       std::string command = "xdg-open " + filename + " 2> errorfile & ";//2 means error output, if error output is printed to the console knome freezes
@@ -104,7 +104,7 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   case -2: //for the subject in quiz hints and answers so that the file is not opened multiple times
   {
     if (validimagetype){
-      imageshown = displayimage(firstpanel,fgs,400,false);
+      imageshown = displayimage(firstpanel,fgs,600,false,kg,true);
     }
     if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
       //file is not shown again
@@ -117,7 +117,7 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   case -3: //for the subject in quiz original questions
   {
     if (validimagetype){
-      imageshown = displayimage(firstpanel,fgs,400,false);
+      imageshown = displayimage(firstpanel,fgs,600,false,kg,true);
     }
     if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
       std::string command = "xdg-open " + filename + " 2> errorfile & ";//2 means error output, if error output is printed to the console knome freezes
@@ -131,7 +131,7 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   default://for parts of statements
   {
     if (validimagetype){
-      imageshown = displayimage(firstpanel,fgs,122,true);
+      imageshown = displayimage(firstpanel,fgs,122,true,kg,false);
     }
     if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
       wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,filename,wxPoint(-1, -1), wxSize(122, 100), wxTE_MULTILINE | wxTE_READONLY);//editable text box for the focal concept
@@ -171,20 +171,40 @@ void fileitem::setname(std::string newname,model * m){
 }
 
 
-bool fileitem::displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * fgs, int desiredwidth, bool rightaligned){
+bool fileitem::displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * fgs, int desiredwidth, bool rightaligned, Knomegui * kg, bool quiz){
   wxImage::AddHandler(new wxPNGHandler);
   wxImage::AddHandler(new wxJPEGHandler);
   wxBitmap image(filename, wxBITMAP_TYPE_ANY);
   if (image.IsOk()){
     const wxSize bmpSize = image.GetSize();
     BufferedBitmap * staticBitmap = new BufferedBitmap(firstpanel, wxID_ANY, image, wxDefaultPosition, wxSize(desiredwidth, desiredwidth*bmpSize.GetHeight()/bmpSize.GetWidth()));
-    if (rightaligned){
-      fgs->Add(staticBitmap, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+    if (quiz){
+      wxFlexGridSizer * imagehbox = new wxFlexGridSizer(1,2,9,9);//a horizontal sizer with 1 row and 2 columns to which we can add the image and a button that allows to open the image
+      imagehbox->Add(staticBitmap, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+      //get id of the file item as a number
+      std::string idnumberstring = id;
+      idnumberstring.erase(idnumberstring.begin());
+      int idnumber = std::stoi(idnumberstring);
+      //add a button via which the image file can be opened
+      wxBitmapButton *openimage = new wxBitmapButton(firstpanel, 1000 + idnumber, wxBitmap(wxT("open_image.png"), wxBITMAP_TYPE_PNG), wxPoint(40, 10));
+      imagehbox->Add(openimage, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+      kg->Connect(1000 + idnumber, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnOpenImage));
+      if (rightaligned){
+        fgs->Add(imagehbox, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+      }
+      else {
+        fgs->Add(imagehbox, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+      }
     }
     else {
-      fgs->Add(staticBitmap, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+      if (rightaligned){
+        fgs->Add(staticBitmap, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+      }
+      else {
+        fgs->Add(staticBitmap, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+      }
     }
-    return true;
+    return true; 
   }
   else {
     return false;

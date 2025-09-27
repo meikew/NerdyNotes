@@ -61,4 +61,5 @@ public:
   void ActivateToolbar();
   void OnSearch(wxCommandEvent& event);
   void OnInfo(wxCommandEvent& event);
+  void OnOpenImage(wxCommandEvent& event);
 };
