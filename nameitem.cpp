@@ -46,8 +46,14 @@ std::vector<item *> nameitem::print_self(){
 
 void nameitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSizer *fgs,Knomegui * kg){
   if (level==0){//if the item is the subject in browsing mode
-    wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(240, 80), wxTE_MULTILINE | wxTE_PROCESS_ENTER | wxTE_AUTO_URL);//editable text box for the focal concept, the conversion to C string and then wxString is necessary to correctly process international characters
-    kg->Connect(wxEVT_TEXT_ENTER, wxCommandEventHandler(Knomegui::OnConceptEdit));
+    wxTextCtrl *tc1;
+    if (id != "bc0"){
+      tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(240, 80), wxTE_MULTILINE | wxTE_PROCESS_ENTER | wxTE_AUTO_URL);//editable text box for the focal concept, the conversion to C string and then wxString is necessary to correctly process international characters
+      kg->Connect(wxEVT_TEXT_ENTER, wxCommandEventHandler(Knomegui::OnConceptEdit));
+    }
+    else {
+      tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(240, 80), wxTE_MULTILINE | wxTE_READONLY  | wxTE_AUTO_URL);//the basic concept "NerdyNotes" cannot be edited
+    }
     tc1->SetBackgroundColour(wxColour("#fbfac3"));//make the text box yellow
     fgs->Add(tc1,0,wxALIGN_LEFT);
   }
