@@ -168,7 +168,7 @@ void item::display_hint(item * connectorpointer, std::vector<item *> answervec,K
         fgs->Add(tc1,0,wxALIGN_RIGHT);
       }
       else {
-	      (objects[relationpointer][i])->print_gui(1,firstpanel,fgs,kg);
+	      (objects[relationpointer][i])->print_gui(-4,firstpanel,fgs,kg);
       }
     }
   }

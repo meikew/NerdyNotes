@@ -62,7 +62,7 @@ void nameitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
     tc1->SetBackgroundColour(wxColour("#fbfac3"));//make the text box yellow
     fgs->Add(tc1,0,wxALIGN_LEFT);
   }
-  else if ((level==1) || (level==-1)) {//if the item is the object in browsing mode or in a quiz
+  else if ((level==1) || (level==-1) || (level==-4)) {//if the item is the object in browsing mode or in a quiz
     wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(400, 60), wxTE_MULTILINE | wxTE_READONLY | wxTE_AUTO_URL);//read-only text box when it is not the focal concept
     tc1->SetBackgroundColour(wxColour("#e7fbc3"));//make the text box light green
     fgs->Add(tc1,0,wxALIGN_RIGHT);

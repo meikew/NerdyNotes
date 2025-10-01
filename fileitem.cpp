@@ -128,6 +128,18 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
     }
     break;
   }
+  case -4: //for objects as part of hints
+  {
+  if (validimagetype){
+      imageshown = displayimage(firstpanel,fgs,400,true,kg,true);
+    }
+    if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
+      wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,filename,wxPoint(-1, -1), wxSize(400, 60), wxTE_MULTILINE | wxTE_READONLY);
+      tc1->SetBackgroundColour(wxColour("#e7fbc3"));//make the text box light green
+      fgs->Add(tc1,0,wxALIGN_RIGHT);
+    }
+    break;
+  }
   default://for parts of statements
   {
     if (validimagetype){
