@@ -34,7 +34,7 @@ public:
   void edit(model & M);
   void filewrite(std::fstream& outfile);
   void setname(std::string newname, model * m);
-  bool displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * fgs, int desiredwidth, bool rightaligned,Knomegui * kg, bool quiz);//returns true if the file exists and false otherwise
+  bool displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * fgs, int desiredwidth, bool rightaligned,Knomegui * kg, bool provideenlargebutton);//returns true if the file exists and false otherwise
   std::string get_filename() const {return filename;};
 protected:
   std::string filename;

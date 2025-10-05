@@ -39,7 +39,7 @@ void relation::filewrite(std::fstream& outfile){
 }
 
 void relation::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSizer *fgs,Knomegui * kg){ 
-  int boxwidth = 200;
+  int boxwidth = 300;
   if (level > 1){
     boxwidth =  120;
   }

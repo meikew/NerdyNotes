@@ -67,12 +67,17 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   switch (level){
   case 0:
   {
-    std::string command = "xdg-open " + filename + " 2> errorfile & ";//2 means error output, if error output is printed to the console knome freezes
-    system(command.c_str());
-    wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,filename,wxPoint(-1, -1), wxSize(240, 40), wxTE_MULTILINE | wxTE_PROCESS_ENTER);//editable text box for the focal concept
-    kg->Connect(wxEVT_TEXT_ENTER, wxCommandEventHandler(Knomegui::OnConceptEdit));
-    tc1->SetBackgroundColour(wxColour("#fbfac3"));//make the text box yellow
-    fgs->Add(tc1,0,wxALIGN_LEFT);
+    if (validimagetype){
+      imageshown = displayimage(firstpanel,fgs,400,false,kg,true);
+    }
+    if (!imageshown){//editing image file names is now temporarily only possible if the file is not present, e.g. if there is a typo in the file name
+      std::string command = "xdg-open " + filename + " 2> errorfile & ";//2 means error output, if error output is printed to the console knome freezes
+      system(command.c_str());
+      wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,filename,wxPoint(-1, -1), wxSize(240, 40), wxTE_MULTILINE | wxTE_PROCESS_ENTER);//editable text box for the focal concept
+      kg->Connect(wxEVT_TEXT_ENTER, wxCommandEventHandler(Knomegui::OnConceptEdit));
+      tc1->SetBackgroundColour(wxColour("#fbfac3"));//make the text box yellow
+      fgs->Add(tc1,0,wxALIGN_LEFT);
+    }
     break;
   }
   case 1:
@@ -131,7 +136,7 @@ void fileitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   case -4: //for objects as part of hints
   {
   if (validimagetype){
-      imageshown = displayimage(firstpanel,fgs,400,true,kg,true);
+      imageshown = displayimage(firstpanel,fgs,345,true,kg,true);
     }
     if (!imageshown){//if the file is not of the selected types or if the file cannot be loaded
       wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,filename,wxPoint(-1, -1), wxSize(400, 60), wxTE_MULTILINE | wxTE_READONLY);
@@ -183,14 +188,14 @@ void fileitem::setname(std::string newname,model * m){
 }
 
 
-bool fileitem::displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * fgs, int desiredwidth, bool rightaligned, Knomegui * kg, bool quiz){
+bool fileitem::displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * fgs, int desiredwidth, bool rightaligned, Knomegui * kg, bool provideenlargebutton){
   wxImage::AddHandler(new wxPNGHandler);
   wxImage::AddHandler(new wxJPEGHandler);
   wxBitmap image(filename, wxBITMAP_TYPE_ANY);
   if (image.IsOk()){
     const wxSize bmpSize = image.GetSize();
     BufferedBitmap * staticBitmap = new BufferedBitmap(firstpanel, wxID_ANY, image, wxDefaultPosition, wxSize(desiredwidth, desiredwidth*bmpSize.GetHeight()/bmpSize.GetWidth()));
-    if (quiz){
+    if (provideenlargebutton){
       wxFlexGridSizer * imagehbox = new wxFlexGridSizer(1,2,9,9);//a horizontal sizer with 1 row and 2 columns to which we can add the image and a button that allows to open the image
       imagehbox->Add(staticBitmap, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
       //get id of the file item as a number
@@ -198,9 +203,9 @@ bool fileitem::displayimage(wxScrolled<wxPanel>* firstpanel, wxFlexGridSizer * f
       idnumberstring.erase(idnumberstring.begin());
       int idnumber = std::stoi(idnumberstring);
       //add a button via which the image file can be opened
-      wxBitmapButton *openimage = new wxBitmapButton(firstpanel, 1000 + idnumber, wxBitmap(wxT("open_image.png"), wxBITMAP_TYPE_PNG), wxPoint(40, 10));
+      wxBitmapButton *openimage = new wxBitmapButton(firstpanel, 10000 + idnumber, wxBitmap(wxT("open_image.png"), wxBITMAP_TYPE_PNG), wxPoint(40, 10));
       imagehbox->Add(openimage, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
-      kg->Connect(1000 + idnumber, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnOpenImage));
+      kg->Connect(10000 + idnumber, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnOpenImage));//there is a slight potential for a clash in case there are more than 5000 statements shown for one subject
       if (rightaligned){
         fgs->Add(imagehbox, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
       }

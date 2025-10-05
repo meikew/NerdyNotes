@@ -39,7 +39,7 @@ void nameitem::print(int level){
 }
 
 std::vector<item *> nameitem::print_self(){
-  print(0);
+  //print(0);
   std::vector<item *> emptyvec;
   return emptyvec;
 }
@@ -48,17 +48,17 @@ void nameitem::print_gui(int level,wxScrolled<wxPanel>* firstpanel,wxFlexGridSiz
   if (level==0){//if the item is the subject in browsing mode
     wxTextCtrl *tc1;
     if (id != "bc0"){
-      tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(240, 80), wxTE_MULTILINE | wxTE_PROCESS_ENTER | wxTE_AUTO_URL);//editable text box for the focal concept, the conversion to C string and then wxString is necessary to correctly process international characters
+      tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(400, 80), wxTE_MULTILINE | wxTE_PROCESS_ENTER | wxTE_AUTO_URL);//editable text box for the focal concept, the conversion to C string and then wxString is necessary to correctly process international characters
       kg->Connect(wxEVT_TEXT_ENTER, wxCommandEventHandler(Knomegui::OnConceptEdit));
     }
     else {
-      tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(240, 80), wxTE_MULTILINE | wxTE_READONLY  | wxTE_AUTO_URL);//the basic concept "NerdyNotes" cannot be edited
+      tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(400, 80), wxTE_MULTILINE | wxTE_READONLY  | wxTE_AUTO_URL);//the basic concept "NerdyNotes" cannot be edited
     }
     tc1->SetBackgroundColour(wxColour("#fbfac3"));//make the text box yellow
     fgs->Add(tc1,0,wxALIGN_LEFT);
   }
   else if ((level==-2)||(level==-3)){//subject in a quiz answer, hint or question
-    wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(240, 80), wxTE_MULTILINE | wxTE_READONLY | wxTE_AUTO_URL);//editable text box for the focal concept, the conversion to C string and then wxString is necessary to correctly process international characters
+    wxTextCtrl *tc1 = new wxTextCtrl(firstpanel, -1,wxString::FromUTF8(name.c_str()),wxPoint(-1, -1), wxSize(400, 80), wxTE_MULTILINE | wxTE_READONLY | wxTE_AUTO_URL);//editable text box for the focal concept, the conversion to C string and then wxString is necessary to correctly process international characters
     tc1->SetBackgroundColour(wxColour("#fbfac3"));//make the text box yellow
     fgs->Add(tc1,0,wxALIGN_LEFT);
   }

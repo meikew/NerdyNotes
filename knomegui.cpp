@@ -34,6 +34,16 @@ const int ID_ENDQUIZ = 7;
 const int ID_SEARCH = 8;
 const int ID_INFO = 9;
 
+//all user-defined IDs should be positive
+//other IDs currently in use
+//50, 51: show answer and hint in quiz
+//60-63: grading buttons for quiz
+//93-96: change quiz settings
+//97, 98 and 99 for editing statements
+//from 101 navigating in the main view
+//from 10,000 opening files (potentially problematic if the main view has more than 5000 items or if there are more than 22,000 file items in total because apparently the highest id used should be 32765)
+
+
 Knomegui::~Knomegui(){
   KM.save_to_file();//model is always saved before exiting to prevent losing progress when exiting in the middle of a quiz
 }
@@ -254,7 +264,7 @@ void Knomegui::OnInfo(wxCommandEvent& event){
 }
 
 void Knomegui::OnOpenImage(wxCommandEvent& event){
-  int id = event.GetId()-1000;
+  int id = event.GetId() - 10000;
   std::string fileitemid =  "f" + std::to_string(id);
   KM.open_image(fileitemid);
 }
