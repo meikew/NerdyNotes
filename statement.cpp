@@ -182,10 +182,18 @@ void statement::quiz_print(int direction, Knomegui * kg){
     pagevbox->Add(fgs, 1, wxALL | wxEXPAND, 15);
   }
   wxBoxSizer * buttonhbox = new wxBoxSizer(wxHORIZONTAL);
-  wxButton * showanswer = new wxButton(firstpanel, 50, wxT("Show answer"));//button for going to the linked concept
-  wxButton * showhint = new wxButton(firstpanel, 51, wxT("Show hint"));//button for going to the linked concept
+  wxButton * showanswer = new wxButton(firstpanel, 50, wxT("Show answer (SPACE)"));//button for going to the linked concept
+  wxButton * showhint = new wxButton(firstpanel, 51, wxT("Show hint (H)"));//button for going to the linked concept
   kg->Connect(50, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnShowAnswer));
   kg->Connect(51, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnDisplayHint));
+
+  //set corresponding keyboard shortcuts
+  wxAcceleratorEntry entries[2];
+  entries[0].Set(wxACCEL_NORMAL, WXK_SPACE, 50);
+  entries[1].Set(wxACCEL_NORMAL, (int) 'H',51);
+  wxAcceleratorTable accel(2, entries);
+  kg->SetAcceleratorTable(accel);
+
   buttonhbox->Add(showanswer, 0, wxALL | wxALIGN_TOP, 15);
   buttonhbox->Add(showhint, 0, wxALL | wxALIGN_TOP, 15);
   pagevbox->Add(buttonhbox, wxALL | wxALIGN_TOP, 15);
@@ -223,6 +231,12 @@ void statement::hint_print(int direction, Knomegui * kg){
   }
   wxButton * showanswer = new wxButton(firstpanel, 50, wxT("Show answer"));//button for going to the linked concept
   kg->Connect(50, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnShowAnswer));
+  //set corresponding keyboard shortcuts
+  wxAcceleratorEntry entries[1];
+  entries[0].Set(wxACCEL_NORMAL, WXK_SPACE, 50);
+  wxAcceleratorTable accel(1, entries);
+  kg->SetAcceleratorTable(accel);
+
   pagevbox->Add(showanswer, 0, wxALL  | wxALIGN_TOP | wxALIGN_CENTER_HORIZONTAL, 15);
   firstpanel->SetSizer(pagevbox);
   kg->DisplayNextPage(firstpanel);
@@ -266,7 +280,7 @@ void statement::answer_print(int direction, Knomegui * kg){
     fgs->AddGrowableCol(0, 1);//make the first column expand if the window is expanded
     pagevbox->Add(fgs, 1, wxALL | wxEXPAND, 15);
   }
-  wxButton * showansweritem = new wxButton(firstpanel,70,wxT("Display full answer item"));
+  wxButton * showansweritem = new wxButton(firstpanel,70,wxT("Display full answer item (A)"));
   pagevbox->Add(showansweritem,0,wxALL | wxALIGN_TOP | wxALIGN_CENTER_HORIZONTAL, 15);
   kg->Connect(70,wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Knomegui::OnAnswerItemShowButton));
   add_grading_buttons(kg,firstpanel,pagevbox);
@@ -322,6 +336,20 @@ void statement::add_grading_buttons(Knomegui * kg,wxScrolled<wxPanel>* firstpane
   buttonhbox->Add(good, 0, wxALL | wxALIGN_TOP, 15);
   buttonhbox->Add(easy, 0, wxALL | wxALIGN_TOP, 15);
   pagevbox->Add(buttonhbox, wxALL | wxALIGN_TOP | wxALIGN_CENTER_HORIZONTAL, 15);
+
+  //Set up keyboard shortcuts for the grading buttons in an accelerator table
+  wxAcceleratorEntry entries[9];
+  entries[0].Set(wxACCEL_NORMAL, WXK_NUMPAD0, 60);
+  entries[1].Set(wxACCEL_NORMAL, WXK_NUMPAD1 , 61);
+  entries[2].Set(wxACCEL_NORMAL, WXK_NUMPAD2 , 62);
+  entries[3].Set(wxACCEL_NORMAL, WXK_NUMPAD3 , 63);
+  entries[4].Set(wxACCEL_NORMAL, (int) 'A' , 70);//display full answer item
+  entries[5].Set(wxACCEL_NORMAL, (int) '0', 60);
+  entries[6].Set(wxACCEL_NORMAL, (int) '1' , 61);
+  entries[7].Set(wxACCEL_NORMAL, (int) '2' , 62);
+  entries[8].Set(wxACCEL_NORMAL, (int) '3' , 63);
+  wxAcceleratorTable accel(9, entries);
+  kg->SetAcceleratorTable(accel);
 }
   
 

@@ -38,6 +38,7 @@ const int ID_INFO = 9;
 //other IDs currently in use
 //50, 51: show answer and hint in quiz
 //60-63: grading buttons for quiz
+//70: display full answer item in quiz
 //93-96: change quiz settings
 //97, 98 and 99 for editing statements
 //from 101 navigating in the main view
@@ -212,15 +213,18 @@ void Knomegui::OnQuiz(wxCommandEvent& event){
 }
 
 void Knomegui::OnShowAnswer(wxCommandEvent& event){
+  SetAcceleratorTable(wxNullAcceleratorTable);//deactivate keyboard shortcuts so that they cannot be used on other screens
   KM.answer(this);
 }
 
 void Knomegui::OnDisplayHint(wxCommandEvent& event){
+  SetAcceleratorTable(wxNullAcceleratorTable);//deactivate keyboard shortcuts so that they cannot be used on other screens
   KM.hint(this);
 }
 
 void Knomegui::OnGradingButton(wxCommandEvent& event){
   int response = event.GetId()-60;//because the four buttons for failure, difficult, good, and easy have IDs 60, 61, 62, 63
+  SetAcceleratorTable(wxNullAcceleratorTable);//deactivate keyboard shortcuts so that they cannot be used on other screens
   KM.grading_continue_quiz(response,this);
 }
 
@@ -236,6 +240,7 @@ void Knomegui::OnEndQuiz(wxCommandEvent& event){
 }
 
 void Knomegui::OnAnswerItemShowButton(wxCommandEvent& event){
+  SetAcceleratorTable(wxNullAcceleratorTable);//deactivate keyboard shortcuts so that they cannot be used on other screens
   KM.answeritemshow(this);
 }
 
