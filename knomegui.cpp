@@ -182,7 +182,7 @@ void Knomegui::OnDelete(wxCommandEvent& event){
 }
 
 void Knomegui::OnGoTo(wxCommandEvent& event){
-  wxTextEntryDialog dialog(this,"Which concept to you want to go to?","");
+  wxTextEntryDialog dialog(this,"Which concept/file to you want to go to?","");
   if (dialog.ShowModal()==wxID_OK){
     std::string targetitem = mywxstringtostdstring(dialog.GetValue());
     KM.go_to_item(targetitem,this);

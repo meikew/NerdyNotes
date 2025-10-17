@@ -609,15 +609,23 @@ void model::delete_current_item(Knomegui * kg){
 }
 
 void model::go_to_item(std::string targetitemname,Knomegui * kg){
+  //first search in concept dictionary
 	std::map<std::string,item *>::iterator it = conceptdictionary.find(targetitemname);
-	if (it == conceptdictionary.end()){
-    wxMessageDialog *dial = new wxMessageDialog(NULL, wxT("Concept not found!"), wxT("Error"), wxOK | wxICON_ERROR);
-    dial->ShowModal();
-	}
-	else {
+  if (it != conceptdictionary.end()){
 	  currentitem = it->second;
     currentitem->displaygui(kg,false);//false because it is not the first page shown
-	}
+  }
+  else {//if not found there continue searching in file dictionary
+    std::map<std::string,item *>::iterator it2 = filedictionary.find(targetitemname);
+    if (it2 != filedictionary.end()){
+	    currentitem = it2->second;
+      currentitem->displaygui(kg,false);//false because it is not the first page shown
+    }
+    else {
+      wxMessageDialog *dial = new wxMessageDialog(NULL, wxT("Concept not found!"), wxT("Error"), wxOK | wxICON_ERROR);
+      dial->ShowModal();
+    }
+  }
 }
 
 void model::go_to_marked_item(Knomegui * kg){
@@ -659,6 +667,7 @@ bool model::find_in_concept_dictionary(std::string cname){
 void model::search(std::string query, Knomegui * kg){
   wxArrayString choices;//structure to save all hits
 
+  //search in concepts
   for (auto const& x : conceptdictionary){//loop over the concept dictionary
     std::size_t found = (x.first).find(query);//x.first is the string belonging to the concept
     if (found!=std::string::npos){//if the string was found
@@ -666,6 +675,16 @@ void model::search(std::string query, Knomegui * kg){
       choices.Add(wxString::FromUTF8((x.first).c_str()));
     }
   }
+
+  //search in file names
+  for (auto const& x : filedictionary){//loop over the file dictionary
+    std::size_t found = (x.first).find(query);//x.first is the string belonging to the file name
+    if (found!=std::string::npos){//if the string was found
+      //wxString convertedstring(x.first);//convert to wxString
+      choices.Add(wxString::FromUTF8((x.first).c_str()));
+    }
+  }
+
   if (choices.GetCount()>0){
     wxSingleChoiceDialog dialog(kg,wxT("Where would you like to go?"),wxT("Search results"),choices);
     if (dialog.ShowModal()==wxID_OK){
