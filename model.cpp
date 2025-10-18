@@ -26,6 +26,7 @@
 #include <sstream>
 #include <boost/random.hpp>
 #include <wx/choicdlg.h>
+#include <wx/filename.h>
 
 extern boost::mt19937 rng;
 
@@ -671,17 +672,30 @@ void model::search(std::string query, Knomegui * kg){
   for (auto const& x : conceptdictionary){//loop over the concept dictionary
     std::size_t found = (x.first).find(query);//x.first is the string belonging to the concept
     if (found!=std::string::npos){//if the string was found
-      //wxString convertedstring(x.first);//convert to wxString
       choices.Add(wxString::FromUTF8((x.first).c_str()));
     }
   }
 
-  //search in file names
+  //search in file names and, if the file is a text file, in the file itself
   for (auto const& x : filedictionary){//loop over the file dictionary
     std::size_t found = (x.first).find(query);//x.first is the string belonging to the file name
-    if (found!=std::string::npos){//if the string was found
-      //wxString convertedstring(x.first);//convert to wxString
+    if (found!=std::string::npos){//if the string was found in the file name
       choices.Add(wxString::FromUTF8((x.first).c_str()));
+    }
+    else {//search in the file itself, but only if it is a text file or something similar (markdown, R script...)
+      wxFileName fn (x.first);
+      wxString extension = fn.GetExt();
+      if (extension == wxT("txt") || extension == wxT("md") || extension == wxT("R") || extension == wxT("org")){
+        std::ifstream file;
+        file.open(x.first); //open the file
+        std::stringstream strStream;
+        strStream << file.rdbuf(); //read the file
+        std::string filetext = strStream.str(); 
+        found = filetext.find(query);
+        if (found!=std::string::npos){//if the string was found in the file name
+          choices.Add(wxString::FromUTF8((x.first).c_str()));
+        }
+      }
     }
   }
 
